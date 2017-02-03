@@ -4,6 +4,7 @@
 #include <mbgl/style/layers/background_layer.hpp>
 #include <mbgl/style/layers/circle_layer.hpp>
 #include <mbgl/style/layers/fill_layer.hpp>
+#include <mbgl/style/layers/fill_extrusion_layer.hpp>
 #include <mbgl/style/layers/line_layer.hpp>
 #include <mbgl/style/layers/raster_layer.hpp>
 #include <mbgl/style/layers/symbol_layer.hpp>
@@ -87,6 +88,8 @@ public:
 
         if (*type == "fill") {
             converted = convertVectorLayer<FillLayer>(*id, value);
+        } else if (*type == "fill-extrusion") {
+            converted = convertVectorLayer<FillExtrusionLayer>(*id, value);
         } else if (*type == "line") {
             converted = convertVectorLayer<LineLayer>(*id, value);
         } else if (*type == "circle") {
