@@ -168,8 +168,11 @@ void Painter::render(const Style& style, const FrameData& frame_, View& view, Sp
         annotationSpriteAtlas.upload(context, 0);
 
         for (const auto& item : order) {
-            if (item.bucket && item.bucket->needsUpload()) {
-                item.bucket->upload(context);
+            for (const auto& tileRef : item.tiles) {
+                const auto& bucket = tileRef.get().tile.getBucket(item.layer);
+                if (bucket && bucket->needsUpload()) {
+                    bucket->upload(context);
+                }
             }
         }
     }
@@ -217,6 +220,7 @@ void Painter::render(const Style& style, const FrameData& frame_, View& view, Sp
     if (debug::renderTree) { Log::Info(Event::Render, "{"); indent++; }
 
     // TODO: Correctly compute the number of layers recursively beforehand.
+    // TODO TODO : this actually sounds like the one-order-item-per-layer might *fix* the above todo. Y/N?
     depthRangeSize = 1 - (order.size() + 2) * numSublayers * depthEpsilon;
 
     // - OPAQUE PASS -------------------------------------------------------------------------------
@@ -311,8 +315,14 @@ void Painter::renderPass(PaintParameters& parameters,
             parameters.view.bind();
             context.setDirtyState();
         } else {
-            MBGL_DEBUG_GROUP(layer.baseImpl->id + " - " + util::toString(item.tile->id));
-            item.bucket->render(*this, parameters, layer, *item.tile);
+            for (auto& tileRef : item.tiles) {
+                auto& tile = tileRef.get();
+                MBGL_DEBUG_GROUP(layer.baseImpl->id + " - " + util::toString(tile.id));
+                auto bucket = tile.tile.getBucket(layer);
+                if (bucket) {
+                    bucket->render(*this, parameters, layer, tile);
+                }
+            }
         }
     }
 
