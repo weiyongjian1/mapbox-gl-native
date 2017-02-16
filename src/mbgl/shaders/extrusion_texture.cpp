@@ -1,12 +1,12 @@
 // NOTE: DO NOT CHANGE THIS FILE. IT IS AUTOMATICALLY GENERATED.
 
-#include <mbgl/shaders/symbol_icon.hpp>
+#include <mbgl/shaders/extrusion_texture.hpp>
 
 namespace mbgl {
 namespace shaders {
 
-const char* symbol_icon::name = "symbol_icon";
-const char* symbol_icon::vertexSource = R"MBGL_SHADER(
+const char* extrusion_texture::name = "extrusion_texture";
+const char* extrusion_texture::vertexSource = R"MBGL_SHADER(
 #ifdef GL_ES
 precision highp float;
 #else
@@ -61,54 +61,20 @@ vec2 get_pattern_pos(const vec2 pixel_coord_upper, const vec2 pixel_coord_lower,
     vec2 offset = mod(mod(mod(pixel_coord_upper, pattern_size) * 256.0, pattern_size) * 256.0 + pixel_coord_lower, pattern_size);
     return (tile_units_to_pixels * pos + offset) / pattern_size;
 }
-attribute vec2 a_pos;
-attribute vec2 a_offset;
-attribute vec2 a_texture_pos;
-attribute vec4 a_data;
-
-uniform lowp float a_opacity_t;
-attribute lowp float a_opacity_min;
-attribute lowp float a_opacity_max;
-varying lowp float opacity;
-
-// matrix is for the vertex position.
 uniform mat4 u_matrix;
-
-uniform mediump float u_zoom;
-uniform bool u_rotate_with_map;
-uniform vec2 u_extrude_scale;
-
-uniform vec2 u_texsize;
-
-varying vec2 v_tex;
-varying vec2 v_fade_tex;
+uniform vec2 u_world;
+attribute vec2 a_pos;
+varying vec2 v_pos;
 
 void main() {
-    opacity = mix(a_opacity_min, a_opacity_max, a_opacity_t);
+    gl_Position = u_matrix * vec4(a_pos, 0, 1);
 
-    vec2 a_tex = a_texture_pos.xy;
-    mediump float a_labelminzoom = a_data[0];
-    mediump vec2 a_zoom = a_data.pq;
-    mediump float a_minzoom = a_zoom[0];
-    mediump float a_maxzoom = a_zoom[1];
-
-    // u_zoom is the current zoom level adjusted for the change in font size
-    mediump float z = 2.0 - step(a_minzoom, u_zoom) - (1.0 - step(a_maxzoom, u_zoom));
-
-    vec2 extrude = u_extrude_scale * (a_offset / 64.0);
-    if (u_rotate_with_map) {
-        gl_Position = u_matrix * vec4(a_pos + extrude, 0, 1);
-        gl_Position.z += z * gl_Position.w;
-    } else {
-        gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0, 0);
-    }
-
-    v_tex = a_tex / u_texsize;
-    v_fade_tex = vec2(a_labelminzoom / 255.0, 0.0);
+    v_pos.x = a_pos.x / u_world.x;
+    v_pos.y = 1.0 - a_pos.y / u_world.y;
 }
 
 )MBGL_SHADER";
-const char* symbol_icon::fragmentSource = R"MBGL_SHADER(
+const char* extrusion_texture::fragmentSource = R"MBGL_SHADER(
 #ifdef GL_ES
 precision mediump float;
 #else
@@ -126,22 +92,16 @@ precision mediump float;
 #endif
 
 #endif
-uniform sampler2D u_texture;
-uniform sampler2D u_fadetexture;
+uniform sampler2D u_image;
+uniform float u_opacity;
 
-varying lowp float opacity;
-
-varying vec2 v_tex;
-varying vec2 v_fade_tex;
+varying vec2 v_pos;
 
 void main() {
-    
-
-    lowp float alpha = texture2D(u_fadetexture, v_fade_tex).a * opacity;
-    gl_FragColor = texture2D(u_texture, v_tex) * alpha;
+    gl_FragColor = texture2D(u_image, v_pos) * u_opacity;
 
 #ifdef OVERDRAW_INSPECTOR
-    gl_FragColor = vec4(1.0);
+    gl_FragColor = vec4(0.0);
 #endif
 }
 
