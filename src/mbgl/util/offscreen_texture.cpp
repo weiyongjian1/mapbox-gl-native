@@ -22,6 +22,19 @@ void OffscreenTexture::bind() {
     context.viewport = { 0, 0, size };
 }
 
+void OffscreenTexture::bindRenderbuffers() {
+    if (!framebuffer) {
+        texture = context.createTexture(size);
+        colorTarget = context.createRenderbuffer<gl::RenderbufferType::RGBA>(size);
+        depthTarget = context.createRenderbuffer<gl::RenderbufferType::DepthComponent>(size);
+        framebuffer = context.createFramebuffer(*colorTarget, *depthTarget, *texture);
+    } else {
+        context.bindFramebuffer = framebuffer->framebuffer;
+    }
+
+    context.viewport = { 0, 0, size };
+}
+
 gl::Texture& OffscreenTexture::getTexture() {
     assert(texture);
     return *texture;

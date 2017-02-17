@@ -2,6 +2,7 @@
 
 #include <mbgl/map/view.hpp>
 #include <mbgl/gl/framebuffer.hpp>
+#include <mbgl/gl/renderbuffer.hpp>
 #include <mbgl/gl/texture.hpp>
 #include <mbgl/util/optional.hpp>
 #include <mbgl/util/image.hpp>
@@ -17,6 +18,7 @@ public:
     OffscreenTexture(gl::Context&, Size size = { 256, 256 });
 
     void bind() override;
+    void bindRenderbuffers();
 
     PremultipliedImage readStillImage();
 
@@ -29,6 +31,8 @@ private:
     gl::Context& context;
     optional<gl::Framebuffer> framebuffer;
     optional<gl::Texture> texture;
+    optional<gl::Renderbuffer<gl::RenderbufferType::RGBA>> colorTarget;
+    optional<gl::Renderbuffer<gl::RenderbufferType::DepthComponent>> depthTarget;
 };
 
 } // namespace mbgl
