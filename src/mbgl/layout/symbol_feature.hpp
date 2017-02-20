@@ -16,6 +16,20 @@ public:
         geometry(feature->getGeometries()),
         properties(feature->getProperties())
     {}
+    
+    SymbolFeature(optional<FeatureIdentifier> id_, FeatureType type_, GeometryCollection geometry_,
+                  std::unordered_map<std::string, Value> properties_, optional<std::u16string> text_,
+                  optional<std::string> icon_, std::array<float, 2> iconOffset_, float iconRotation_, std::size_t index_) :
+        id(id_),
+        type(type_),
+        geometry(geometry_),
+        properties(properties_),
+        text(text_),
+        icon(icon_),
+        iconOffset(iconOffset_),
+        iconRotation(iconRotation_),
+        index(index_)
+    {}
 
     FeatureType getType() const override { return type; }
     optional<Value> getValue(const std::string& key) const override {

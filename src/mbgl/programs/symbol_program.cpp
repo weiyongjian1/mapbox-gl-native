@@ -1,3 +1,4 @@
+#include <iostream>
 #include <mbgl/programs/symbol_program.hpp>
 #include <mbgl/renderer/render_tile.hpp>
 #include <mbgl/map/transform_state.hpp>
@@ -56,7 +57,7 @@ Values makeSDFValues(const style::SymbolPropertyValues& values,
 {
     const float scale = values.paintSize / values.sdfScale;
     
-    const float gammaScale = (values.pitchAlignment == AlignmentType::Map
+    const float gammaScale = scale * (values.pitchAlignment == AlignmentType::Map
                               ? std::cos(state.getPitch())
                               : 1.0) * state.getCameraToCenterDistance();
     
