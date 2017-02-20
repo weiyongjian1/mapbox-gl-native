@@ -12,6 +12,11 @@ namespace util {
 template <typename T> class Thread;
 } // namespace util
 
+enum class DefaultFileSourceRevalidationState {
+    Active,
+    Inactive
+};
+
 class DefaultFileSource : public FileSource {
 public:
     /*
@@ -37,6 +42,16 @@ public:
     std::string getAccessToken() const;
 
     void setResourceTransform(std::function<std::string(Resource::Kind, std::string&&)>);
+
+    /*
+     * Pause or resume revalidation requests.
+     *
+     * If the revalidation state is set to inactive, then attempts to 
+     * call request will call the callback immediately with a request
+     * with an error indicating that the file source is inactive.
+     */
+    void setRevalidationState(DefaultFileSourceRevalidationState state);
+    DefaultFileSourceRevalidationState getRevalidationState() const;
 
     std::unique_ptr<AsyncRequest> request(const Resource&, Callback) override;
 

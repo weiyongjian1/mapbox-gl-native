@@ -50,6 +50,14 @@ public:
         onlineFileSource.setResourceTransform(std::move(transform));
     }
 
+    void setRevalidationState(DefaultFileSourceRevalidationState state) {
+        revalidationState = state;
+    }
+
+    DefaultFileSourceRevalidationState getRevalidationState() const {
+        return revalidationState;
+    }
+
     void listRegions(std::function<void (std::exception_ptr, optional<std::vector<OfflineRegion>>)> callback) {
         try {
             callback({}, offlineDatabase.listRegions());
@@ -105,6 +113,15 @@ public:
     }
 
     void request(AsyncRequest* req, Resource resource, Callback callback) {
+
+        if (revalidationState == DefaultFileSourceRevalidationState::Inactive) {
+            Response inactiveResponse;
+            inactiveResponse.error = std::make_unique<Response::Error>(
+                Response::Error::Reason::Other, "File source is inactive");
+            callback(inactiveResponse);
+            return;
+        }
+
         Resource revalidation = resource;
 
         const bool hasPrior = resource.priorEtag || resource.priorModified || resource.priorExpires;
@@ -162,6 +179,7 @@ private:
     OnlineFileSource onlineFileSource;
     std::unordered_map<AsyncRequest*, std::unique_ptr<AsyncRequest>> tasks;
     std::unordered_map<int64_t, std::unique_ptr<OfflineDownload>> downloads;
+    DefaultFileSourceRevalidationState revalidationState;
 };
 
 DefaultFileSource::DefaultFileSource(const std::string& cachePath,
@@ -198,6 +216,14 @@ void DefaultFileSource::setResourceTransform(std::function<std::string(Resource:
             callback(transform(kind, std::move(url)));
         }, kind_, std::move(url_), callback_);
     });
+}
+
+void DefaultFileSource::setRevalidationState(DefaultFileSourceRevalidationState state) {
+    thread->invokeSync(&Impl::setRevalidationState, state);
+}
+
+DefaultFileSourceRevalidationState DefaultFileSource::getRevalidationState() const {
+    return thread->invokeSync(&Impl::getRevalidationState);
 }
 
 std::unique_ptr<AsyncRequest> DefaultFileSource::request(const Resource& resource, Callback callback) {

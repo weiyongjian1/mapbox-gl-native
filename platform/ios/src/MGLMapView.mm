@@ -1070,6 +1070,8 @@ public:
     {
         self.dormant = YES;
 
+        [MGLOfflineStorage sharedOfflineStorage].mbglFileSource->setRevalidationState(mbgl::DefaultFileSourceRevalidationState::Inactive);
+
         [self validateLocationServices];
 
         [MGLMapboxEvents flush];
@@ -1106,6 +1108,8 @@ public:
     if (self.dormant && [UIApplication sharedApplication].applicationState != UIApplicationStateBackground)
     {
         self.dormant = NO;
+
+        [MGLOfflineStorage sharedOfflineStorage].mbglFileSource->setRevalidationState(mbgl::DefaultFileSourceRevalidationState::Active);
 
         [self createGLView];
 

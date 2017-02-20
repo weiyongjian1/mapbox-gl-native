@@ -490,3 +490,32 @@ TEST(DefaultFileSource, TEST_REQUIRES_SERVER(SetResourceTransform)) {
 
     loop.run();
 }
+
+// Test that if we make a request when the file source is inactive, no
+// invalidation occurs and not request is actually made
+TEST(DefaultFileSource, NoInvalidationIfInactive) {
+    util::RunLoop loop;
+    DefaultFileSource fs(":memory:", ".");
+
+    fs.setRevalidationState(DefaultFileSourceRevalidationState::Inactive);
+    EXPECT_EQ(fs.getRevalidationState(), DefaultFileSourceRevalidationState::Inactive);
+
+    const Resource optionalResource { Resource::Unknown, "http://127.0.0.1:3000/test", {}, Resource::Optional };
+
+    using namespace std::chrono_literals;
+
+    std::unique_ptr<AsyncRequest> req;
+    req = fs.request(optionalResource, [&](Response res) {
+        req.reset();
+        ASSERT_TRUE(res.error.get());
+        EXPECT_EQ(Response::Error::Reason::Other, res.error->reason);
+        EXPECT_EQ("File source is inactive", res.error->message);
+        EXPECT_FALSE(res.data);
+        EXPECT_FALSE(bool(res.expires));
+        EXPECT_FALSE(bool(res.modified));
+        EXPECT_FALSE(bool(res.etag));
+        loop.stop();
+    });
+
+    loop.run();
+}
