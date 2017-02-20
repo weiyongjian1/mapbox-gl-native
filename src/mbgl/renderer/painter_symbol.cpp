@@ -35,7 +35,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
                      const auto& buffers,
                      const SymbolPropertyValues& values_,
                      const auto& binders,
-                     const auto& paintPropertyValues)
+                     const auto& paintProperties)
     {
         // We clip symbols to their tile extent in still mode.
         const bool needsClipping = frame.mapMode == MapMode::Still;
@@ -55,7 +55,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
             *buffers.indexBuffer,
             buffers.segments,
             binders,
-            paintPropertyValues,
+            paintProperties,
             state.getZoom()
         );
     };

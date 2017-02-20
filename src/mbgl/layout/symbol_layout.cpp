@@ -233,7 +233,7 @@ void SymbolLayout::prepare(uintptr_t tileUID,
         layout.get<SymbolPlacement>() == SymbolPlacementType::Line;
 
     for (auto it = features.begin(); it != features.end(); ++it) {
-        const auto feature = *it;
+        auto feature = *it;
         if (feature.geometry.empty()) continue;
 
         std::pair<Shaping, Shaping> shapedTextOrientations;
@@ -294,6 +294,9 @@ void SymbolLayout::prepare(uintptr_t tileUID,
         if (shapedTextOrientations.first || shapedIcon) {
             addFeature(std::distance(features.begin(), it), feature, shapedTextOrientations, shapedIcon, face);
         }
+        
+        // we're done using geometry for symbol placement, so empty it.
+        feature.geometry.clear();
     }
 }
 
