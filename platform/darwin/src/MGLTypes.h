@@ -53,7 +53,9 @@ typedef NS_ENUM(NSUInteger, MGLUserTrackingMode) {
     MGLUserTrackingModeNone              = 0,
     /** The map follows the user location. */
     MGLUserTrackingModeFollow,
-    /** The map follows the user location and rotates when the heading changes. */
+    /** The map follows the user location and rotates when the heading changes. 
+        The default user location annotation shows a fan-shaped indicator with 
+        the current heading, sized according to the reported accuracy. */
     MGLUserTrackingModeFollowWithHeading,
     /** The map follows the user location and rotates when the course changes. */
     MGLUserTrackingModeFollowWithCourse,
