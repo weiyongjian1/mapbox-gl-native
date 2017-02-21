@@ -129,6 +129,7 @@ void Style::setJSON(const std::string& json) {
     defaultZoom = parser.zoom;
     defaultBearing = parser.bearing;
     defaultPitch = parser.pitch;
+    light = parser.light;
 
     glyphAtlas->setURL(parser.glyphURL);
     spriteAtlas->load(parser.spriteURL, fileSource);

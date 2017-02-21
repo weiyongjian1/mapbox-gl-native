@@ -14,6 +14,10 @@
 
 namespace mbgl {
 
+namespace style {
+    class Style;
+} // namespace style
+
 class SymbolBucket : public Bucket {
 public:
     SymbolBucket(style::SymbolLayoutProperties::Evaluated,
@@ -23,7 +27,7 @@ public:
                  bool iconsNeedLinear);
 
     void upload(gl::Context&) override;
-    void render(Painter&, PaintParameters&, const style::Layer&, const RenderTile&) override;
+    void render(Painter&, PaintParameters&, const style::Layer&, const RenderTile&, const style::Style&) override;
     bool hasData() const override;
     bool hasTextData() const;
     bool hasIconData() const;

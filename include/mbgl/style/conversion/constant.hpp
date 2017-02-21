@@ -104,6 +104,25 @@ struct Converter<std::array<float, 2>> {
 };
 
 template <>
+struct Converter<std::array<float, 3>> {
+    template <class V>
+    Result<std::array<float, 3>> operator()(const V& value) const {
+        if (!isArray(value) || arrayLength(value) != 3) {
+            return Error { "value must be an array of three numbers" };
+        }
+
+        optional<float> first = toNumber(arrayMember(value, 0));
+        optional<float> second = toNumber(arrayMember(value, 1));
+        optional<float> third = toNumber(arrayMember(value, 2));
+        if (!first || !second || !third) {
+            return Error { "value must be an array of three numbers" };
+        }
+
+        return std::array<float, 3> {{ *first, *second, *third }};
+    }
+};
+
+template <>
 struct Converter<std::array<float, 4>> {
     template <class V>
     Result<std::array<float, 4>> operator()(const V& value) const {
