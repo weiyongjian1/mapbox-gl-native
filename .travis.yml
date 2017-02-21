@@ -173,7 +173,8 @@ matrix:
         - mapbox_export_mesa_library_path
       script:
         - make qt-app
-        - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so make run-qt-test-Memory.*:*.Load
+        - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so make run-qt-test-*.Load
+        - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so make run-benchmark-Memory
 
     # Qt 5 - GCC 5 - Release
     - os: linux
