@@ -7,17 +7,26 @@
 
 namespace mbgl {
 
-struct Anchor;
+class Anchor;
 class IndexedSubfeature;
 
 class SymbolInstance {
 public:
-    explicit SymbolInstance(Anchor& anchor, const GeometryCoordinates& line,
-            const std::pair<Shaping, Shaping>& shapedTextOrientations, const PositionedIcon& shapedIcon,
-            const style::SymbolLayoutProperties::Evaluated&, const bool inside, const uint32_t index,
-            const float textBoxScale, const float textPadding, style::SymbolPlacementType textPlacement,
-            const float iconBoxScale, const float iconPadding, style::SymbolPlacementType iconPlacement,
-            const GlyphPositions& face, const IndexedSubfeature& indexedfeature);
+    SymbolInstance(Anchor& anchor,
+                   const GeometryCoordinates& line,
+                   const std::pair<Shaping, Shaping>& shapedTextOrientations,
+                   const PositionedIcon& shapedIcon,
+                   const style::SymbolLayoutProperties::Evaluated&,
+                   const bool inside,
+                   const uint32_t index,
+                   const float textBoxScale,
+                   const float textPadding,
+                   style::SymbolPlacementType textPlacement,
+                   const float iconBoxScale,
+                   const float iconPadding,
+                   style::SymbolPlacementType iconPlacement,
+                   const GlyphPositions& face,
+                   const IndexedSubfeature&);
 
     Point<float> point;
     uint32_t index;
