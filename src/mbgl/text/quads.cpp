@@ -14,7 +14,7 @@ using namespace style;
 
 const float globalMinScale = 0.5f; // underscale by 1 zoom level
 
-SymbolQuads getIconQuads(Anchor& anchor,
+SymbolQuads getIconQuads(const Anchor& anchor,
                          const PositionedIcon& shapedIcon,
                          const GeometryCoordinates& line,
                          const SymbolLayoutProperties::Evaluated& layout,
