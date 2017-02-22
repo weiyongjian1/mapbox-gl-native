@@ -176,7 +176,7 @@ DefaultFileSource::DefaultFileSource(const std::string& cachePath,
 DefaultFileSource::~DefaultFileSource() = default;
 
 void DefaultFileSource::setAPIBaseURL(const std::string& baseURL) {
-    thread->invokeSync(&Impl::setAPIBaseURL, baseURL);
+    thread->invoke(&Impl::setAPIBaseURL, baseURL);
 }
 
 std::string DefaultFileSource::getAPIBaseURL() const {
@@ -184,7 +184,7 @@ std::string DefaultFileSource::getAPIBaseURL() const {
 }
 
 void DefaultFileSource::setAccessToken(const std::string& accessToken) {
-    thread->invokeSync(&Impl::setAccessToken, accessToken);
+    thread->invoke(&Impl::setAccessToken, accessToken);
 }
 
 std::string DefaultFileSource::getAccessToken() const {
