@@ -249,10 +249,6 @@ bool memoryFootprintBenchmark() {
     
     return assertWithinThreshold("Vector", vectorFootprint, 65 * 1024 * 1024) &&
         assertWithinThreshold("Raster", rasterFootprint, 25 * 1024 * 1024);
-    
-    std::cout <<
-        "Vector footprint: " << vectorFootprint << std::endl <<
-        "Raster footprint: " << rasterFootprint << std::endl;
 }
 
 } // namespace benchmark
