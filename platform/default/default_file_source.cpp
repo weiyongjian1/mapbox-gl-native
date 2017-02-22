@@ -55,6 +55,10 @@ public:
 
         if (revalidationState == DefaultFileSourceRevalidationState::Inactive) {
             tasks.clear();
+        } else if (revalidationState == DefaultFileSourceRevalidationState::Active) {
+            for (const auto &it : requestComponents) {
+                makeOnlineRequest(it.first, it.second->first, it.second->second);
+            }
         }
     }
 
@@ -150,15 +154,23 @@ public:
         }
 
         if (resource.necessity == Resource::Required) {
-            tasks[req] = onlineFileSource.request(revalidation, [=] (Response onlineResponse) {
-                this->offlineDatabase.put(revalidation, onlineResponse);
-                callback(onlineResponse);
-            });
+            makeOnlineRequest(req, revalidation, callback);
         }
+    }
+
+    void makeOnlineRequest(AsyncRequest* req, Resource revalidation, Callback callback) {
+        tasks[req] = onlineFileSource.request(revalidation, [=] (Response onlineResponse) {
+            this->offlineDatabase.put(revalidation, onlineResponse);
+            callback(onlineResponse);
+        });
+
+        requestComponents[req] = std::make_unique<std::pair<Resource, Callback>>(std::make_pair(revalidation, callback));
     }
 
     void cancel(AsyncRequest* req) {
         tasks.erase(req);
+
+        requestComponents.erase(req);
     }
 
     void setOfflineMapboxTileCountLimit(uint64_t limit) {
@@ -183,6 +195,7 @@ private:
     OnlineFileSource onlineFileSource;
     std::unordered_map<AsyncRequest*, std::unique_ptr<AsyncRequest>> tasks;
     std::unordered_map<int64_t, std::unique_ptr<OfflineDownload>> downloads;
+    std::unordered_map<AsyncRequest *, std::unique_ptr<std::pair<Resource, Callback>>> requestComponents;
     DefaultFileSourceRevalidationState revalidationState;
 };
 
