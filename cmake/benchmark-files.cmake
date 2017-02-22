@@ -6,6 +6,10 @@ set(MBGL_BENCHMARK_FILES
 
     # include/mbgl
     benchmark/include/mbgl/benchmark.hpp
+    benchmark/include/mbgl/memory.benchmark.hpp
+
+    # memory
+    benchmark/memory/memory.benchmark.cpp
 
     # parse
     benchmark/parse/filter.benchmark.cpp
@@ -15,6 +19,8 @@ set(MBGL_BENCHMARK_FILES
 
     # src/mbgl/benchmark
     benchmark/src/mbgl/benchmark/benchmark.cpp
+    benchmark/src/mbgl/benchmark/stub_file_source.cpp
+    benchmark/src/mbgl/benchmark/stub_file_source.hpp
     benchmark/src/mbgl/benchmark/util.cpp
     benchmark/src/mbgl/benchmark/util.hpp
 )
