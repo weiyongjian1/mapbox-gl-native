@@ -112,7 +112,6 @@ set(MBGL_TEST_FILES
     test/util/http_timeout.test.cpp
     test/util/image.test.cpp
     test/util/mapbox.test.cpp
-    test/util/memory.test.cpp
     test/util/merge_lines.test.cpp
     test/util/number_conversions.test.cpp
     test/util/offscreen_texture.test.cpp
