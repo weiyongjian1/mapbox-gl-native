@@ -54,6 +54,32 @@ public:
         return future.get();
     }
 
+    void pause() {
+        assert(!paused);
+
+        paused = std::make_unique<std::promise<void>>();
+        resumed = std::make_unique<std::promise<void>>();
+
+        auto pausing = paused->get_future();
+
+        loop->invoke([this] {
+            auto resuming = resumed->get_future();
+            paused->set_value();
+            resuming.get();
+        });
+
+        pausing.get();
+    }
+
+    void resume() {
+        assert(paused);
+
+        resumed->set_value();
+
+        paused.reset();
+        resumed.reset();
+    }
+
 private:
     Thread(const Thread&) = delete;
     Thread(Thread&&) = delete;
@@ -72,6 +98,9 @@ private:
 
     std::promise<void> running;
     std::promise<void> joinable;
+
+    std::unique_ptr<std::promise<void>> paused;
+    std::unique_ptr<std::promise<void>> resumed;
 
     std::thread thread;
 

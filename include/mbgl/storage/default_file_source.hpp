@@ -12,11 +12,6 @@ namespace util {
 template <typename T> class Thread;
 } // namespace util
 
-enum class DefaultFileSourceRevalidationState {
-    Active,
-    Inactive
-};
-
 class DefaultFileSource : public FileSource {
 public:
     /*
@@ -50,8 +45,8 @@ public:
      * call request will call the callback immediately with a request
      * with an error indicating that the file source is inactive.
      */
-    void setRevalidationState(DefaultFileSourceRevalidationState state);
-    DefaultFileSourceRevalidationState getRevalidationState() const;
+    void pause();
+    void resume();
 
     std::unique_ptr<AsyncRequest> request(const Resource&, Callback) override;
 

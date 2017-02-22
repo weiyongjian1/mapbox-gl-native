@@ -1070,7 +1070,7 @@ public:
     {
         self.dormant = YES;
 
-        [MGLOfflineStorage sharedOfflineStorage].mbglFileSource->setRevalidationState(mbgl::DefaultFileSourceRevalidationState::Inactive);
+        [MGLOfflineStorage sharedOfflineStorage].mbglFileSource->pause();
 
         [self validateLocationServices];
 
@@ -1109,7 +1109,7 @@ public:
     {
         self.dormant = NO;
 
-        [MGLOfflineStorage sharedOfflineStorage].mbglFileSource->setRevalidationState(mbgl::DefaultFileSourceRevalidationState::Active);
+        [MGLOfflineStorage sharedOfflineStorage].mbglFileSource->resume();
 
         [self createGLView];
 
