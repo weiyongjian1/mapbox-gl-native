@@ -195,11 +195,11 @@ private:
 
 bool assertWithinThreshold(std::string label, double actual, int expected) {
     bool pass = actual <= expected;
-    std::cout << label << ": " << actual;
+    std::cout << label << ": " << actual / (1024 * 1024) << " MB";
     if (pass) {
         std::cout << " OK" << std::endl;
     } else {
-        std::cout << " FAILED (expected < " << expected << ")" << std::endl;
+        std::cout << " FAILED (expected < " << expected / (1024 * 1024) << " MB)" << std::endl;
     }
     return pass;
 }
