@@ -52,6 +52,10 @@ public:
 
     void setRevalidationState(DefaultFileSourceRevalidationState state) {
         revalidationState = state;
+
+        if (revalidationState == DefaultFileSourceRevalidationState::Inactive) {
+            tasks.clear();
+        }
     }
 
     DefaultFileSourceRevalidationState getRevalidationState() const {
