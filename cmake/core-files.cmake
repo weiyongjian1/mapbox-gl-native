@@ -252,6 +252,7 @@ set(MBGL_CORE_FILES
     include/mbgl/style/filter.hpp
     include/mbgl/style/filter_evaluator.hpp
     include/mbgl/style/layer.hpp
+    include/mbgl/style/light.hpp
     include/mbgl/style/property_value.hpp
     include/mbgl/style/source.hpp
     include/mbgl/style/transition_options.hpp
@@ -272,6 +273,7 @@ set(MBGL_CORE_FILES
     src/mbgl/style/layer_impl.hpp
     src/mbgl/style/layer_observer.hpp
     src/mbgl/style/layout_property.hpp
+    src/mbgl/style/light.cpp
     src/mbgl/style/observer.hpp
     src/mbgl/style/paint_property.hpp
     src/mbgl/style/paint_property_binder.hpp
@@ -304,6 +306,7 @@ set(MBGL_CORE_FILES
     include/mbgl/style/conversion/geojson.hpp
     include/mbgl/style/conversion/geojson_options.hpp
     include/mbgl/style/conversion/layer.hpp
+    include/mbgl/style/conversion/light.hpp
     include/mbgl/style/conversion/make_property_setters.hpp
     include/mbgl/style/conversion/property_setter.hpp
     include/mbgl/style/conversion/property_value.hpp
