@@ -39,13 +39,22 @@ public:
     void setResourceTransform(std::function<std::string(Resource::Kind, std::string&&)>);
 
     /*
-     * Pause or resume revalidation requests.
+     * Pause file request activity.
      *
-     * If the revalidation state is set to inactive, then attempts to 
-     * call request will call the callback immediately with a request
-     * with an error indicating that the file source is inactive.
+     * If pause is called then no revalidation or network request activity
+     * will occur.
+     *
+     * Note: Calling pause and then calling getAPIBaseURL or getAccessToken
+     * will lock the thread that those calls are made on.
      */
     void pause();
+
+    /*
+     * Resume file request activity
+     *
+     * Calling resume will unpause the file source and process any tasks that
+     * expired while the file source was paused.
+     */
     void resume();
 
     std::unique_ptr<AsyncRequest> request(const Resource&, Callback) override;
