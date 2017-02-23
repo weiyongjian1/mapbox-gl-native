@@ -35,7 +35,7 @@ public:
 
     std::unordered_map<std::string, std::pair<
         SymbolIconProgram::PaintPropertyBinders,
-        SymbolSDFGlyphProgram::PaintPropertyBinders>> paintPropertyBinders;
+        SymbolSDFTextProgram::PaintPropertyBinders>> paintPropertyBinders;
 
     struct TextBuffer {
         gl::VertexVector<SymbolLayoutVertex> vertices;

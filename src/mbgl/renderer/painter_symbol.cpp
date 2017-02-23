@@ -109,7 +109,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
 
         if (values.hasHalo) {
             draw(parameters.programs.symbolGlyph,
-                 SymbolSDFGlyphProgram::haloUniformValues(values, texsize, pixelsToGLUnits, tile, state),
+                 SymbolSDFTextProgram::haloUniformValues(values, texsize, pixelsToGLUnits, tile, state),
                  bucket.text,
                  values,
                  bucket.paintPropertyBinders.at(layer.getID()).second,
@@ -118,7 +118,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
 
         if (values.hasFill) {
             draw(parameters.programs.symbolGlyph,
-                 SymbolSDFGlyphProgram::foregroundUniformValues(values, texsize, pixelsToGLUnits, tile, state),
+                 SymbolSDFTextProgram::foregroundUniformValues(values, texsize, pixelsToGLUnits, tile, state),
                  bucket.text,
                  values,
                  bucket.paintPropertyBinders.at(layer.getID()).second,
