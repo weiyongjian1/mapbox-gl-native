@@ -147,8 +147,6 @@ SymbolLayout::SymbolLayout(const BucketParameters& parameters,
 
         if (hasIcon) {
             ft.icon = util::replaceTokens(layout.get<IconImage>(), getValue);
-            ft.iconOffset = layout.evaluate<IconOffset>(zoom, *feature);
-            ft.iconRotation = layout.evaluate<IconRotate>(zoom, *feature) * util::DEG2RAD;
         }
 
         if (ft.text || ft.icon) {
@@ -277,7 +275,9 @@ void SymbolLayout::prepare(uintptr_t tileUID,
         if (feature.icon) {
             auto image = spriteAtlas.getIcon(*feature.icon);
             if (image) {
-                shapedIcon = shapeIcon(*image, feature);
+                shapedIcon = shapeIcon(*image,
+                    layout.evaluate<IconOffset>(zoom, feature),
+                    layout.evaluate<IconRotate>(zoom, feature) * util::DEG2RAD);
                 assert((*image).spriteImage);
                 if ((*image).spriteImage->sdf) {
                     sdfIcons = true;
