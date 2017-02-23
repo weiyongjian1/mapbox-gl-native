@@ -233,7 +233,7 @@ void SymbolLayout::prepare(uintptr_t tileUID,
         layout.get<SymbolPlacement>() == SymbolPlacementType::Line;
 
     for (auto it = features.begin(); it != features.end(); ++it) {
-        auto feature = *it;
+        auto& feature = *it;
         if (feature.geometry.empty()) continue;
 
         std::pair<Shaping, Shaping> shapedTextOrientations;
@@ -503,7 +503,7 @@ std::unique_ptr<SymbolBucket> SymbolLayout::place(CollisionTile& collisionTile) 
             }
         }
         
-        const auto feature = features.at(symbolInstance.featureIndex);
+        const auto& feature = features.at(symbolInstance.featureIndex);
         for (auto& pair : bucket->paintPropertyBinders) {
             pair.second.first.populateVertexVectors(feature, bucket->icon.vertices.vertexSize());
             pair.second.second.populateVertexVectors(feature, bucket->text.vertices.vertexSize());
