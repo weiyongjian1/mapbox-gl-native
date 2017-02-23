@@ -93,14 +93,14 @@ SymbolIconProgram::uniformValues(const style::SymbolPropertyValues& values,
     );
 }
 
-
-SymbolSDFIconProgram::UniformValues SymbolSDFIconProgram::haloUniformValues(const style::SymbolPropertyValues& values,
+template <class PaintProperties>
+typename SymbolSDFProgram<PaintProperties>::UniformValues SymbolSDFProgram<PaintProperties>::haloUniformValues(const style::SymbolPropertyValues& values,
                               const Size& texsize,
                               const std::array<float, 2>& pixelsToGLUnits,
                               const RenderTile& tile,
                               const TransformState& state)
 {
-    return makeSDFValues<SymbolSDFIconProgram::UniformValues>(
+    return makeSDFValues<SymbolSDFProgram<PaintProperties>::UniformValues>(
         values,
         texsize,
         pixelsToGLUnits,
@@ -110,13 +110,14 @@ SymbolSDFIconProgram::UniformValues SymbolSDFIconProgram::haloUniformValues(cons
     );
 }
 
-SymbolSDFIconProgram::UniformValues SymbolSDFIconProgram::foregroundUniformValues(const style::SymbolPropertyValues& values,
+template <class PaintProperties>
+typename SymbolSDFProgram<PaintProperties>::UniformValues SymbolSDFProgram<PaintProperties>::foregroundUniformValues(const style::SymbolPropertyValues& values,
                                     const Size& texsize,
                                     const std::array<float, 2>& pixelsToGLUnits,
                                     const RenderTile& tile,
                                     const TransformState& state)
 {
-    return makeSDFValues<SymbolSDFIconProgram::UniformValues>(
+    return makeSDFValues<SymbolSDFProgram<PaintProperties>::UniformValues>(
         values,
         texsize,
         pixelsToGLUnits,
@@ -126,36 +127,7 @@ SymbolSDFIconProgram::UniformValues SymbolSDFIconProgram::foregroundUniformValue
     );
 }
 
-SymbolSDFGlyphProgram::UniformValues SymbolSDFGlyphProgram::haloUniformValues(const style::SymbolPropertyValues& values,
-                              const Size& texsize,
-                              const std::array<float, 2>& pixelsToGLUnits,
-                              const RenderTile& tile,
-                              const TransformState& state)
-{
-    return makeSDFValues<SymbolSDFGlyphProgram::UniformValues>(
-        values,
-        texsize,
-        pixelsToGLUnits,
-        tile,
-        state,
-        true
-    );
-}
-
-SymbolSDFGlyphProgram::UniformValues SymbolSDFGlyphProgram::foregroundUniformValues(const style::SymbolPropertyValues& values,
-                                    const Size& texsize,
-                                    const std::array<float, 2>& pixelsToGLUnits,
-                                    const RenderTile& tile,
-                                    const TransformState& state)
-{
-    return makeSDFValues<SymbolSDFGlyphProgram::UniformValues>(
-        values,
-        texsize,
-        pixelsToGLUnits,
-        tile,
-        state,
-        false
-    );
-}
+template class SymbolSDFProgram<style::IconPaintProperties>;
+template class SymbolSDFProgram<style::TextPaintProperties>;
 
 } // namespace mbgl
