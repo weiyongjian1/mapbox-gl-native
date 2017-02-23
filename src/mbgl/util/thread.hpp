@@ -10,6 +10,8 @@
 #include <mbgl/util/thread_context.hpp>
 #include <mbgl/util/platform.hpp>
 
+#include <cassert>
+
 namespace mbgl {
 namespace util {
 
