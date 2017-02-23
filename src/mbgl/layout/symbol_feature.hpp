@@ -19,15 +19,13 @@ public:
     
     SymbolFeature(optional<FeatureIdentifier> id_, FeatureType type_, GeometryCollection geometry_,
                   std::unordered_map<std::string, Value> properties_, optional<std::u16string> text_,
-                  optional<std::string> icon_, std::array<float, 2> iconOffset_, float iconRotation_, std::size_t index_) :
+                  optional<std::string> icon_, std::size_t index_) :
         id(id_),
         type(type_),
         geometry(geometry_),
         properties(properties_),
         text(text_),
         icon(icon_),
-        iconOffset(iconOffset_),
-        iconRotation(iconRotation_),
         index(index_)
     {}
 
@@ -50,8 +48,6 @@ public:
     
     optional<std::u16string> text;
     optional<std::string> icon;
-    std::array<float, 2> iconOffset;
-    float iconRotation;
     std::size_t index;
 };
 
