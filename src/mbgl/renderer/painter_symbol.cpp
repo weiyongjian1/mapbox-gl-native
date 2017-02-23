@@ -74,7 +74,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
         if (bucket.sdfIcons) {
             if (values.hasHalo) {
                 draw(parameters.programs.symbolIconSDF,
-                     SymbolSDFIconProgram::haloUniformValues(values, texsize, pixelsToGLUnits, tile, state),
+                     SymbolSDFIconProgram::uniformValues(values, texsize, pixelsToGLUnits, tile, state, SymbolSDFPart::Halo),
                      bucket.icon,
                      values,
                      bucket.paintPropertyBinders.at(layer.getID()).first,
@@ -83,7 +83,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
 
             if (values.hasFill) {
                 draw(parameters.programs.symbolIconSDF,
-                     SymbolSDFIconProgram::foregroundUniformValues(values, texsize, pixelsToGLUnits, tile, state),
+                     SymbolSDFIconProgram::uniformValues(values, texsize, pixelsToGLUnits, tile, state, SymbolSDFPart::Fill),
                      bucket.icon,
                      values,
                      bucket.paintPropertyBinders.at(layer.getID()).first,
@@ -109,7 +109,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
 
         if (values.hasHalo) {
             draw(parameters.programs.symbolGlyph,
-                 SymbolSDFTextProgram::haloUniformValues(values, texsize, pixelsToGLUnits, tile, state),
+                 SymbolSDFTextProgram::uniformValues(values, texsize, pixelsToGLUnits, tile, state, SymbolSDFPart::Halo),
                  bucket.text,
                  values,
                  bucket.paintPropertyBinders.at(layer.getID()).second,
@@ -118,7 +118,7 @@ void Painter::renderSymbol(PaintParameters& parameters,
 
         if (values.hasFill) {
             draw(parameters.programs.symbolGlyph,
-                 SymbolSDFTextProgram::foregroundUniformValues(values, texsize, pixelsToGLUnits, tile, state),
+                 SymbolSDFTextProgram::uniformValues(values, texsize, pixelsToGLUnits, tile, state, SymbolSDFPart::Fill),
                  bucket.text,
                  values,
                  bucket.paintPropertyBinders.at(layer.getID()).second,

@@ -3,12 +3,18 @@
 #include <mbgl/renderer/render_tile.hpp>
 #include <mbgl/map/transform_state.hpp>
 #include <mbgl/style/layers/symbol_layer_impl.hpp>
+#include <mbgl/util/enum.hpp>
 
 namespace mbgl {
 
 using namespace style;
 
 static_assert(sizeof(SymbolLayoutVertex) == 16, "expected SymbolLayoutVertex size");
+
+MBGL_DEFINE_ENUM(SymbolSDFPart, {
+    { SymbolSDFPart::Fill, "fill" },
+    { SymbolSDFPart::Halo, "halo" }
+});
 
 template <class Values, class...Args>
 Values makeValues(const style::SymbolPropertyValues& values,
@@ -47,36 +53,6 @@ Values makeValues(const style::SymbolPropertyValues& values,
     };
 }
 
-template <class Values, class...Args>
-Values makeSDFValues(const style::SymbolPropertyValues& values,
-                              const Size& texsize,
-                              const std::array<float, 2>& pixelsToGLUnits,
-                              const RenderTile& tile,
-                              const TransformState& state,
-                              const bool isHalo)
-{
-    const float scale = values.paintSize / values.sdfScale;
-    
-    const float gammaScale = scale * (values.pitchAlignment == AlignmentType::Map
-                              ? std::cos(state.getPitch())
-                              : 1.0) * state.getCameraToCenterDistance();
-    
-    return makeValues<Values>(
-        values,
-        texsize,
-        pixelsToGLUnits,
-        tile,
-        state,
-        uniforms::u_font_scale::Value{ scale },
-        uniforms::u_gamma_scale::Value{ gammaScale },
-        uniforms::u_pitch::Value{ state.getPitch() },
-        uniforms::u_bearing::Value{ -1.0f * state.getAngle() },
-        uniforms::u_aspect_ratio::Value{ (state.getSize().width * 1.0f) / (state.getSize().height * 1.0f) },
-        uniforms::u_pitch_with_map::Value{ values.pitchAlignment == AlignmentType::Map },
-        uniforms::u_is_halo::Value{ isHalo }
-    );
-}
-
 SymbolIconProgram::UniformValues
 SymbolIconProgram::uniformValues(const style::SymbolPropertyValues& values,
                                  const Size& texsize,
@@ -94,36 +70,32 @@ SymbolIconProgram::uniformValues(const style::SymbolPropertyValues& values,
 }
 
 template <class PaintProperties>
-typename SymbolSDFProgram<PaintProperties>::UniformValues SymbolSDFProgram<PaintProperties>::haloUniformValues(const style::SymbolPropertyValues& values,
+typename SymbolSDFProgram<PaintProperties>::UniformValues SymbolSDFProgram<PaintProperties>::uniformValues(const style::SymbolPropertyValues& values,
                               const Size& texsize,
                               const std::array<float, 2>& pixelsToGLUnits,
                               const RenderTile& tile,
-                              const TransformState& state)
+                              const TransformState& state,
+                              const SymbolSDFPart part)
 {
-    return makeSDFValues<SymbolSDFProgram<PaintProperties>::UniformValues>(
+    const float scale = values.paintSize / values.sdfScale;
+    
+    const float gammaScale = scale * (values.pitchAlignment == AlignmentType::Map
+                              ? std::cos(state.getPitch())
+                              : 1.0) * state.getCameraToCenterDistance();
+    
+    return makeValues<SymbolSDFProgram<PaintProperties>::UniformValues>(
         values,
         texsize,
         pixelsToGLUnits,
         tile,
         state,
-        true
-    );
-}
-
-template <class PaintProperties>
-typename SymbolSDFProgram<PaintProperties>::UniformValues SymbolSDFProgram<PaintProperties>::foregroundUniformValues(const style::SymbolPropertyValues& values,
-                                    const Size& texsize,
-                                    const std::array<float, 2>& pixelsToGLUnits,
-                                    const RenderTile& tile,
-                                    const TransformState& state)
-{
-    return makeSDFValues<SymbolSDFProgram<PaintProperties>::UniformValues>(
-        values,
-        texsize,
-        pixelsToGLUnits,
-        tile,
-        state,
-        false
+        uniforms::u_font_scale::Value{ scale },
+        uniforms::u_gamma_scale::Value{ gammaScale },
+        uniforms::u_pitch::Value{ state.getPitch() },
+        uniforms::u_bearing::Value{ -1.0f * state.getAngle() },
+        uniforms::u_aspect_ratio::Value{ (state.getSize().width * 1.0f) / (state.getSize().height * 1.0f) },
+        uniforms::u_pitch_with_map::Value{ values.pitchAlignment == AlignmentType::Map },
+        uniforms::u_is_halo::Value{ part == SymbolSDFPart::Halo }
     );
 }
 

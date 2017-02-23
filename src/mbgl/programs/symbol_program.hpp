@@ -95,6 +95,11 @@ public:
                                        const TransformState&);
 };
 
+enum class SymbolSDFPart {
+    Fill = 1,
+    Halo = 0
+};
+
 template <class PaintProperties>
 class SymbolSDFProgram : public Program<
     shaders::symbol_sdf,
@@ -140,19 +145,16 @@ public:
     
     using UniformValues = typename BaseProgram::UniformValues;
     
+
+    
     using BaseProgram::BaseProgram;
 
-    static UniformValues haloUniformValues(const style::SymbolPropertyValues&,
-                                           const Size& texsize,
-                                           const std::array<float, 2>& pixelsToGLUnits,
-                                           const RenderTile&,
-                                           const TransformState&);
-
-    static UniformValues foregroundUniformValues(const style::SymbolPropertyValues&,
-                                                 const Size& texsize,
-                                                 const std::array<float, 2>& pixelsToGLUnits,
-                                                 const RenderTile&,
-                                                 const TransformState&);
+    static UniformValues uniformValues(const style::SymbolPropertyValues&,
+                                       const Size& texsize,
+                                       const std::array<float, 2>& pixelsToGLUnits,
+                                       const RenderTile&,
+                                       const TransformState&,
+                                       const SymbolSDFPart);
 };
 
 using SymbolSDFIconProgram = SymbolSDFProgram<style::IconPaintProperties>;
