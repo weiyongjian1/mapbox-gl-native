@@ -1,4 +1,3 @@
-#include <iostream>
 #include <mbgl/programs/symbol_program.hpp>
 #include <mbgl/renderer/render_tile.hpp>
 #include <mbgl/map/transform_state.hpp>
@@ -10,11 +9,6 @@ namespace mbgl {
 using namespace style;
 
 static_assert(sizeof(SymbolLayoutVertex) == 16, "expected SymbolLayoutVertex size");
-
-MBGL_DEFINE_ENUM(SymbolSDFPart, {
-    { SymbolSDFPart::Fill, "fill" },
-    { SymbolSDFPart::Halo, "halo" }
-});
 
 template <class Values, class...Args>
 Values makeValues(const style::SymbolPropertyValues& values,

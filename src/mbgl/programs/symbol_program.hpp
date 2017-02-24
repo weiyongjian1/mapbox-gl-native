@@ -162,6 +162,6 @@ using SymbolSDFTextProgram = SymbolSDFProgram<style::TextPaintProperties>;
 
 using SymbolLayoutVertex = SymbolLayoutAttributes::Vertex;
 using SymbolIconAttributes = SymbolIconProgram::Attributes;
-using SymbolGlyphAttributes = SymbolSDFTextProgram::Attributes;
+using SymbolTextAttributes = SymbolSDFTextProgram::Attributes;
 
 } // namespace mbgl
