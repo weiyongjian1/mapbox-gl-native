@@ -27,30 +27,21 @@ static LinearRing<std::int32_t> toWagyuPath(const GeometryCoordinates& ring) {
 }
 
 static void pushWagyuRing(GeometryCollection & solution,
-                          mapbox::geometry::wagyu::ring_ptr<std::int32_t>& r, 
-                          bool reverse_output) {
+                          mapbox::geometry::wagyu::ring_ptr<std::int32_t>& r) {
     GeometryCoordinates lr;
     lr.reserve(r->size() + 1);
     auto firstPt = r->points;
     auto ptIt = r->points;
-    if (reverse_output) {
-        do {
-            lr.emplace_back(ptIt->x, ptIt->y);
-            ptIt = ptIt->next;
-        } while (ptIt != firstPt);
-    } else {
-        do {
-            lr.emplace_back(ptIt->x, ptIt->y);
-            ptIt = ptIt->prev;
-        } while (ptIt != firstPt);
-    }
+    do {
+        lr.emplace_back(ptIt->x, ptIt->y);
+        ptIt = ptIt->prev;
+    } while (ptIt != firstPt);
     lr.emplace_back(firstPt->x, firstPt->y); // close the ring
     solution.push_back(lr);
 }
 
 static void buildWagyuResults(GeometryCollection & solution,
-                              mapbox::geometry::wagyu::ring_vector<std::int32_t>& rings,
-                              bool reverse_output) {
+                              mapbox::geometry::wagyu::ring_vector<std::int32_t>& rings) {
     for (auto& r : rings) {
         if (r == nullptr) {
             continue;
@@ -60,7 +51,7 @@ static void buildWagyuResults(GeometryCollection & solution,
             continue;
         }
         solution.emplace_back();
-        pushWagyuRing(solution, r, reverse_output);
+        pushWagyuRing(solution, r);
         for (auto& c : r->children) {
             if (c == nullptr) {
                 continue;
@@ -69,14 +60,14 @@ static void buildWagyuResults(GeometryCollection & solution,
             if (c->size() < 3) {
                 continue;
             }
-            pushWagyuRing(solution, c, reverse_output);
+            pushWagyuRing(solution, c);
         }
         for (auto& c : r->children) {
             if (c == nullptr) {
                 continue;
             }
             if (!c->children.empty()) {
-                buildWagyuResults(solution, c->children, reverse_output);
+                buildWagyuResults(solution, c->children);
             }
         }
     }
@@ -111,7 +102,7 @@ GeometryCollection fixupPolygons(const GeometryCollection& rings) {
     // This calls code based on wagyu/build_results.hpp
     // rather then returning a multipolygon however, we are
     // going to return a GeometryCollection
-    buildWagyuResults(result, manager.children, false);
+    buildWagyuResults(result, manager.children);
 
     return result;
 }
