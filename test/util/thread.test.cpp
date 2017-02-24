@@ -129,6 +129,34 @@ TEST(Thread, context) {
     loop.run();
 }
 
+TEST(Thread, pause) {
+    const std::thread::id tid = std::this_thread::get_id();
+
+    RunLoop loop;
+    std::vector<std::unique_ptr<mbgl::AsyncRequest>> requests;
+
+    Thread<TestObject> thread({"Test"}, tid);
+    Thread<TestObject> unpausedThread({"UnpausedTest"}, tid);
+
+    loop.invoke([&] {
+        thread.pause();
+
+        requests.push_back(thread.invokeWithCallback(&TestObject::fn2, [&] (int result) {
+            EXPECT_EQ(tid, std::this_thread::get_id());
+            EXPECT_EQ(result, 1);
+            loop.stop();
+        }));
+
+        requests.push_back(unpausedThread.invokeWithCallback(&TestObject::transferOut, [&] (std::unique_ptr<int> result) {
+            EXPECT_EQ(tid, std::this_thread::get_id());
+            EXPECT_EQ(*result, 1);
+            thread.resume();
+        }));
+    });
+
+    loop.run();
+}
+
 class TestWorker {
 public:
     TestWorker() = default;
