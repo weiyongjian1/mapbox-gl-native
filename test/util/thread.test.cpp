@@ -129,32 +129,30 @@ TEST(Thread, context) {
     loop.run();
 }
 
-TEST(Thread, pause) {
+TEST(Thread, PauseThenResume) {
     const std::thread::id tid = std::this_thread::get_id();
 
-    RunLoop loop;
+    RunLoop loop1;
     std::vector<std::unique_ptr<mbgl::AsyncRequest>> requests;
 
-    Thread<TestObject> thread({"Test"}, tid);
-    Thread<TestObject> unpausedThread({"UnpausedTest"}, tid);
+    Thread<TestObject> thread1({"Test1"}, tid);
+    Thread<TestObject> thread2({"Test2"}, tid);
 
-    loop.invoke([&] {
-        thread.pause();
+    thread1.pause();
 
-        requests.push_back(thread.invokeWithCallback(&TestObject::fn2, [&] (int result) {
-            EXPECT_EQ(tid, std::this_thread::get_id());
-            EXPECT_EQ(result, 1);
-            loop.stop();
-        }));
+    requests.push_back(thread1.invokeWithCallback(&TestObject::fn2, [&] (int result) {
+        EXPECT_EQ(tid, std::this_thread::get_id());
+        EXPECT_EQ(result, 1);
+        loop1.stop();
+    }));
 
-        requests.push_back(unpausedThread.invokeWithCallback(&TestObject::transferOut, [&] (std::unique_ptr<int> result) {
-            EXPECT_EQ(tid, std::this_thread::get_id());
-            EXPECT_EQ(*result, 1);
-            thread.resume();
-        }));
-    });
+    requests.push_back(thread2.invokeWithCallback(&TestObject::transferOut, [&] (std::unique_ptr<int> result) {
+        EXPECT_EQ(tid, std::this_thread::get_id());
+        EXPECT_EQ(*result, 1);
+        thread1.resume();
+    }));
 
-    loop.run();
+    loop1.run();
 }
 
 class TestWorker {

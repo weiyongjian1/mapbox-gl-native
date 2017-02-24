@@ -9,6 +9,7 @@
 #include <mbgl/util/run_loop.hpp>
 #include <mbgl/util/thread_context.hpp>
 #include <mbgl/util/platform.hpp>
+#include <mbgl/util/util.hpp>
 
 #include <cassert>
 
@@ -57,6 +58,8 @@ public:
     }
 
     void pause() {
+        MBGL_VERIFY_THREAD(tid);
+
         assert(!paused);
 
         paused = std::make_unique<std::promise<void>>();
@@ -74,6 +77,8 @@ public:
     }
 
     void resume() {
+        MBGL_VERIFY_THREAD(tid);
+
         assert(paused);
 
         resumed->set_value();
@@ -83,6 +88,8 @@ public:
     }
 
 private:
+    MBGL_STORE_THREAD(tid);
+    
     Thread(const Thread&) = delete;
     Thread(Thread&&) = delete;
     Thread& operator=(const Thread&) = delete;
