@@ -143,6 +143,8 @@ private:
     const std::unique_ptr<util::Thread<Impl>> thread;
     const std::unique_ptr<FileSource> assetFileSource;
     const std::unique_ptr<FileSource> localFileSource;
+    std::string cachedBaseURL;
+    std::string cachedAccessToken;
 };
 
 } // namespace mbgl
