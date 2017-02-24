@@ -35,6 +35,8 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -212,6 +214,19 @@ public class RuntimeStyleTests {
       } catch (CannotAddLayerException cannotAddLayerException) {
         // OK
       }
+
+      // Remove by index
+      Timber.i("Remove layer at index 0");
+      Layer firstLayer = mapboxMap.getLayers().get(0);
+      Layer removed = mapboxMap.removeLayerAt(0);
+      assertNotNull(removed);
+      assertEquals(firstLayer.getId(), removed.getId());
+
+      // Test remove by index bounds checks
+      Timber.i("Remove layer at index -1");
+      assertNull(mapboxMap.removeLayerAt(-1));
+      Timber.i("Remove layer at index > size");
+      assertNull(mapboxMap.removeLayerAt(Integer.MAX_VALUE));
     }
   }
 

@@ -799,6 +799,14 @@ final class NativeMapView {
     return layer;
   }
 
+  @Nullable
+  public Layer removeLayerAt(int index) {
+    if (isDestroyedOn("removeLayerAt")) {
+      return null;
+    }
+    return nativeRemoveLayerAt(index);
+  }
+
   public List<Source> getSources() {
     if (isDestroyedOn("getSources")) {
       return null;
@@ -1098,6 +1106,8 @@ final class NativeMapView {
   private native Layer nativeRemoveLayerById(String layerId);
 
   private native void nativeRemoveLayer(long layerId);
+
+  private native Layer nativeRemoveLayerAt(int index);
 
   private native Source[] nativeGetSources();
 
