@@ -96,9 +96,11 @@ SymbolLayout::SymbolLayout(const BucketParameters& parameters,
     // Determine and load glyph ranges
     const size_t featureCount = sourceLayer.featureCount();
     for (size_t i = 0; i < featureCount; ++i) {
-        SymbolFeature ft(sourceLayer.getFeature(i));
-        if (!leader.filter(ft.getType(), ft.getID(), [&] (const auto& key) { return ft.getValue(key); }))
+        auto feature = sourceLayer.getFeature(i);
+        if (!leader.filter(feature->getType(), feature->getID(), [&] (const auto& key) { return feature->getValue(key); }))
             continue;
+        
+        SymbolFeature ft(std::move(feature));
 
         ft.index = i;
 
